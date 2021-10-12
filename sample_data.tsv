@@ -1,0 +1,9 @@
+TID	Transaction
+T1	apple, banana, pear, fig
+T2	banana, orange, fig
+T3	fig, water, pear, orange, milk
+T4	pear, banana, water, fig
+T5	pear, water, fig
+T6	kiwi, pear, milk, water, fig
+T7	apple, pear, orange, water, banana, kiwi
+T8	pear, orange, apple
