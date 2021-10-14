@@ -22,3 +22,5 @@ for record in df['Transaction']:
 for key in item_obj:
     item_obj[key]['support'] = (item_obj[key]['count'])/transaction_count
 
+print('Hello')
+
