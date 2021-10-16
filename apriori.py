@@ -58,10 +58,10 @@ def next_step():
     item_combinations = list(itertools.combinations(support_index[1], 2))
 
     while len(current_support_items) > 0:
-        current_support_items = []
         current_list_level += 1
         item_combinations = list(itertools.combinations(current_support_items,
                                                         current_list_level))
+        current_support_items = []
         for combination in item_combinations:
             combination = tuple(sorted(combination))
             common_transactions = set(item_obj[combination[0]]['transactions'])
@@ -78,13 +78,6 @@ def next_step():
                 current_support_items = list(set(current_support_items))
                 item_obj.update({combination: {'cnt': 1, 'transactions': common_transactions,
                                                'support': current_support}})
-
-    pprint(support_index)
-
-
-
-
-
 
 
 if __name__ == '__main__':
