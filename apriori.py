@@ -3,7 +3,7 @@ from pprint import pprint
 
 import pandas as pd
 
-df = pd.read_csv('sample_data.tsv', sep='\t')
+df = pd.read_csv('best_buy.tsv', sep='\t')
 
 # item_obj stores information related to each item, such as count, support, transaction ID (as a set)
 item_obj = {}
