@@ -105,14 +105,35 @@ def next_step():
             confidence = item_obj[item]['support'] / item_obj[left_side]['support']
             if confidence < min_confidence:
                 continue
+
             if left_side in association_rules:
                 association_rules[left_side].append({'recommendations': right_side, 'confidence': confidence})
             else:
                 association_rules.update({left_side: [{'recommendations': right_side, 'confidence': confidence}]})
 
-    pprint(association_rules)
+    # pprint(association_rules)
+    print('Association rules are as follows: ')
+    for key in association_rules:
+        for each_recommendation in association_rules[key]:
+            print('{} -> {}'.format(key, each_recommendation['recommendations']))
+
+
+def apriori_by_library():
+    from apyori import apriori
+    records = []
+    for each_row in df['Transaction']:
+        items = each_row.split(',')
+        items = [item.lower().strip() for item in items]
+        records.append(items)
+        
+    print('-'*100)
+    association_rules_by_library = apriori(records, min_support=min_support, min_confidence=min_confidence)
+    association_rules_by_library = list(association_rules_by_library)
+    for each_rule in association_rules_by_library:
+        print(each_rule)
 
 
 if __name__ == '__main__':
     init_one()
     next_step()
+    apriori_by_library()
