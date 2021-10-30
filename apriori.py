@@ -24,8 +24,8 @@ current_list_level = 1
 def init_one():
     # creating the first level
     for index, row in df.iterrows():
-        record = row['Transaction']
-        tid = row['TID']
+        record = row[df.columns[1]]
+        tid = row[df.columns[0]]
 
         # splitting each item
         items = record.split(',')
@@ -121,7 +121,7 @@ def next_step():
 def apriori_by_library():
     from apyori import apriori
     records = []
-    for each_row in df['Transaction']:
+    for each_row in df[df.columns[1]]:
         items = each_row.split(',')
         items = [item.lower().strip() for item in items]
         records.append(items)
