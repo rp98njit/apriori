@@ -1,9 +1,9 @@
 import itertools
 from pprint import pprint
-
+from deepdiff import DeepDiff
 import pandas as pd
 
-df = pd.read_csv('best_buy.tsv', sep='\t')
+df = pd.read_csv('nike.tsv', sep='\t')
 
 # item_obj stores information related to each item, such as count, support, transaction ID (as a set)
 item_obj = {}
@@ -129,7 +129,6 @@ def apriori_by_library():
         items = [item.lower().strip() for item in items]
         records.append(items)
         
-    print('-'*100)
     association_rules_by_library = apriori(records, min_support=min_support, min_confidence=min_confidence)
     association_rules_by_library = list(association_rules_by_library)
     bb = {}
@@ -140,6 +139,8 @@ def apriori_by_library():
             base = tuple(i[0])
             if len(base) == 1:
                 base = base[0]
+            else:
+                base = tuple(sorted(base))
             recommendations = tuple(i[1])
             if len(recommendations) == 1:
                 recommendations = recommendations[0]
@@ -157,9 +158,8 @@ if __name__ == '__main__':
     init_one()
     a = next_step()
     b = apriori_by_library()
-    if a == b:
-        print('yes')
-    else:
-        pprint(a)
-        print('-'*100)
-        pprint(b)
+    print('Association Rules from my program')
+    pprint(a)
+    print('-'*100)
+    print('Association Rules from library')
+    pprint(b)
