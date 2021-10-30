@@ -111,11 +111,14 @@ def next_step():
             else:
                 association_rules.update({left_side: [{'recommendations': right_side, 'confidence': confidence}]})
 
+    # pprint(item_obj)
+    # print('-'*100)
     # pprint(association_rules)
-    print('Association rules are as follows: ')
-    for key in association_rules:
-        for each_recommendation in association_rules[key]:
-            print('{} -> {}'.format(key, each_recommendation['recommendations']))
+    # print('Association rules are as follows: ')
+    # for key in association_rules:
+    #     for each_recommendation in association_rules[key]:
+    #         print('{} -> {}'.format(key, each_recommendation['recommendations']))
+    return association_rules
 
 
 def apriori_by_library():
@@ -129,11 +132,34 @@ def apriori_by_library():
     print('-'*100)
     association_rules_by_library = apriori(records, min_support=min_support, min_confidence=min_confidence)
     association_rules_by_library = list(association_rules_by_library)
+    bb = {}
     for each_rule in association_rules_by_library:
-        print(each_rule)
+        for i in each_rule[2]:
+            if len(list(i[0])) == 0:
+                continue
+            base = tuple(i[0])
+            if len(base) == 1:
+                base = base[0]
+            recommendations = tuple(i[1])
+            if len(recommendations) == 1:
+                recommendations = recommendations[0]
+
+            cc = {'confidence': i[2], 'recommendations': recommendations}
+            if base in bb:
+                bb[base].extend([cc])
+            else:
+                bb[base] = [cc]
+
+    return bb
 
 
 if __name__ == '__main__':
     init_one()
-    next_step()
-    apriori_by_library()
+    a = next_step()
+    b = apriori_by_library()
+    if a == b:
+        print('yes')
+    else:
+        pprint(a)
+        print('-'*100)
+        pprint(b)
