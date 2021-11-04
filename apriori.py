@@ -1,9 +1,51 @@
 import itertools
-from pprint import pprint
-from deepdiff import DeepDiff
-import pandas as pd
+try:
+    import pandas as pd
+except ModuleNotFoundError as e:
+    print('-----ERROR-----')
+    print("Pandas library is not installed. Execute 'pip install pandas==1.3.4'.\n\
+If faced with errors drop an email to rp98@njit.edu or rajendra7406@gmail.com")
+    exit(0)
 
-df = pd.read_csv('nike.tsv', sep='\t')
+try:
+    from apyori import apriori
+except ModuleNotFoundError():
+    print('-----ERROR-----')
+    print("Pandas library is not installed. Execute 'pip install apyori==1.1.2'.\n\
+If faced with errors drop an email to rp98@njit.edu or rajendra7406@gmail.com")
+    exit(0)
+
+print('*'*100)
+print('This an implementation of apriori alogorithm from scratch.\n\
+Choose the dataset ID to continue further.')
+print('*'*100)
+
+print('\n\n\
+ID Datset\n\
+1  Amazon\n\
+2  Best Buy\n\
+3  Custom Data\n\
+4  General Data\n\
+5  Kmart\n\
+6  Nike\n\
+7  Sample Data\n')
+
+while(1):
+    try:
+        dataset_id = int(input('Enter the ID of dataset: '))
+    except ValueError as e:
+        print('Enter a value from one of those IDs')
+        continue
+    if (dataset_id >= 1 and dataset_id <= 7):
+        break
+    else:
+        print('Enter a value from one of those IDs')
+        continue
+    
+dataset_id_mapping = {1: 'amazon.tsv', 2: 'best_buy.tsv', 3: 'custom_data.tsv', \
+4: 'general.tsv', 5: 'kmart.tsv', 6: 'nike.tsv', 7: 'sample_data.tsv'}
+
+df = pd.read_csv(dataset_id_mapping[dataset_id], sep='\t')
 
 # item_obj stores information related to each item, such as count, support, transaction ID (as a set)
 item_obj = {}
@@ -111,7 +153,7 @@ def next_step():
             else:
                 association_rules.update({left_side: [{'recommendations': right_side, 'confidence': confidence}]})
 
-    # pprint(item_obj)
+# pprint(item_obj)
     # print('-'*100)
     # pprint(association_rules)
     # print('Association rules are as follows: ')
@@ -122,7 +164,6 @@ def next_step():
 
 
 def apriori_by_library():
-    from apyori import apriori
     records = []
     for each_row in df[df.columns[1]]:
         items = each_row.split(',')
@@ -159,7 +200,5 @@ if __name__ == '__main__':
     a = next_step()
     b = apriori_by_library()
     print('Association Rules from my program')
-    pprint(a)
     print('-'*100)
     print('Association Rules from library')
-    pprint(b)
