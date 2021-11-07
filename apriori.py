@@ -1,4 +1,5 @@
 import itertools
+
 try:
     import pandas as pd
 except ModuleNotFoundError as e:
@@ -15,13 +16,13 @@ except ModuleNotFoundError():
 If faced with errors drop an email to rp98@njit.edu or rajendra7406@gmail.com")
     exit(0)
 
-print('*'*100)
+print('*' * 100)
 print('This an implementation of apriori alogorithm from scratch.\n\
 Choose the dataset ID to continue further.')
-print('*'*100)
+print('*' * 100)
 
-print('\n\n\
-ID Datset\n\
+print('\n\
+ID Dataset\n\
 1  Amazon\n\
 2  Best Buy\n\
 3  Custom Data\n\
@@ -30,20 +31,21 @@ ID Datset\n\
 6  Nike\n\
 7  Sample Data\n')
 
-while(1):
+dataset_id = 1
+while 1:
     try:
         dataset_id = int(input('Enter the ID of dataset: '))
     except ValueError as e:
-        print('Enter a value from one of those IDs')
+        print('Enter a value from one of the IDs')
         continue
-    if (dataset_id >= 1 and dataset_id <= 7):
+    if 1 <= dataset_id <= 7:
         break
     else:
-        print('Enter a value from one of those IDs')
+        print('Enter a value from one of the IDs')
         continue
-    
-dataset_id_mapping = {1: 'amazon.tsv', 2: 'best_buy.tsv', 3: 'custom_data.tsv', \
-4: 'general.tsv', 5: 'kmart.tsv', 6: 'nike.tsv', 7: 'sample_data.tsv'}
+
+dataset_id_mapping = {1: 'amazon.tsv', 2: 'best_buy.tsv', 3: 'custom_data.tsv', 4: 'general.tsv', 5: 'kmart.tsv',
+                      6: 'nike.tsv', 7: 'sample_data.tsv'}
 
 df = pd.read_csv(dataset_id_mapping[dataset_id], sep='\t')
 
@@ -51,8 +53,32 @@ df = pd.read_csv(dataset_id_mapping[dataset_id], sep='\t')
 item_obj = {}
 
 transaction_count = df.shape[0]
+
 min_support = 0.5
-min_confidence = 0.7
+while 1:
+    try:
+        min_support = float(input('\nEnter minimum support (value should be between 0.01 and 0.99): '))
+    except ValueError as e:
+        print('Enter a decimal value between 0.01 and 0.99')
+        continue
+    if 0.01 <= min_support <= 0.99:
+        break
+    else:
+        print('Enter a decimal value between 0.01 and 0.99')
+        continue
+
+min_confidence = 0.5
+while 1:
+    try:
+        min_confidence = float(input('\nEnter minimum confidence (value should be between 0.01 and 0.99): '))
+    except ValueError as e:
+        print('Enter a decimal value between 0.01 and 0.99')
+        continue
+    if 0.01 <= min_confidence <= 0.99:
+        break
+    else:
+        print('Enter a decimal value between 0.01 and 0.99')
+        continue
 
 '''
 support_index stores item/items whose support is greater than or equal to min_support
@@ -107,10 +133,10 @@ def next_step():
         for combination in item_combinations:
             combination = tuple(sorted(combination))
             common_transactions = set(item_obj[combination[0]]['transactions'])
-            for i in range(len(combination)-1):
-                set_2 = set(item_obj[combination[i+1]]['transactions'])
+            for i in range(len(combination) - 1):
+                set_2 = set(item_obj[combination[i + 1]]['transactions'])
                 common_transactions = common_transactions.intersection(set_2)
-            current_support = len(common_transactions)/transaction_count
+            current_support = len(common_transactions) / transaction_count
             if current_support >= min_support:
                 if current_list_level not in support_index:
                     support_index.update({current_list_level: [combination]})
@@ -125,10 +151,10 @@ def next_step():
         if type(item) == str:
             continue
 
-        for i in range(1, 2**len(item)-1):
+        for i in range(1, 2 ** len(item) - 1):
             right_side = []
             indexes = '{0:b}'.format(i)
-            indexes = '0'*(len(item)-len(indexes)) + indexes
+            indexes = '0' * (len(item) - len(indexes)) + indexes
 
             for j, value in enumerate(indexes):
                 if value == '1':
@@ -153,13 +179,6 @@ def next_step():
             else:
                 association_rules.update({left_side: [{'recommendations': right_side, 'confidence': confidence}]})
 
-# pprint(item_obj)
-    # print('-'*100)
-    # pprint(association_rules)
-    # print('Association rules are as follows: ')
-    # for key in association_rules:
-    #     for each_recommendation in association_rules[key]:
-    #         print('{} -> {}'.format(key, each_recommendation['recommendations']))
     return association_rules
 
 
@@ -169,7 +188,7 @@ def apriori_by_library():
         items = each_row.split(',')
         items = [item.lower().strip() for item in items]
         records.append(items)
-        
+
     association_rules_by_library = apriori(records, min_support=min_support, min_confidence=min_confidence)
     association_rules_by_library = list(association_rules_by_library)
     bb = {}
@@ -195,10 +214,37 @@ def apriori_by_library():
     return bb
 
 
+def output_program():
+    print('-' * 100)
+    print('Item frequent sets from my program')
+    change_in_type = 1
+    print('1 item frequency set')
+    for key1 in item_obj.keys():
+        if type(key1) is str:
+            print(key1)
+        else:
+            if change_in_type != len(key1):
+                change_in_type = len(key1)
+                print('\n{}-item frequency set'.format(len(key1)))
+                print(str(key1))
+            else:
+                print(str(key1))
+
+
 if __name__ == '__main__':
     init_one()
     a = next_step()
     b = apriori_by_library()
-    print('Association Rules from my program')
+    output_program()
+
     print('-'*100)
+    print('Association rules are as follows: ')
+    for key in a:
+        for each_recommendation in a[key]:
+            print('{} -> {}'.format(key, each_recommendation['recommendations']))
+
+    print('-' * 100)
     print('Association Rules from library')
+    for key in b:
+        for each_recommendation in b[key]:
+            print('{} -> {}'.format(key, each_recommendation['recommendations']))
